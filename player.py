@@ -1,0 +1,64 @@
+# Class defined for Tang
+
+import pygame
+import game_const
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Player, self).__init__()
+
+        self.image = pygame.transform.scale(pygame.image.load("./assets/player/T_RED.PNG"), (129, 179))
+        self.rect = self.image.get_rect(center = (400, 400))
+        self.mask = pygame.mask.from_surface(self.image)
+
+        self.hp = 5
+        self.speed = 5
+
+        self.bullets = pygame.sprite.Group()
+        self.shoot_CD = 0
+
+    def move(self):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    self.rect.top -= self.speed
+                if event.key == pygame.K_s:
+                    self.rect.top += self.speed
+                if event.key == pygame.K_a:
+                    self.rect.left -= self.speed
+                if event.key == pygame.K_d:
+                    self.rect.left += self.speed
+
+        if self.rect.left < 0:
+            self.rect.left = 0
+        elif self.rect.right > game_const.size[0]:
+            self.rect.right = game_const.size[0]
+        elif self.rect.top < 0:
+            self.rect.top = 0
+        elif self.rect.bottom > game_const.size[1]:
+            self.rect.bottom = game_const.size[1]
+
+        pygame.key.set_repeat(1)
+
+    def loss_hp(self, bullets):
+        if pygame.sprite.spritecollide(self, bullets, True, pygame.sprite.collide_mask):
+            self.hp -= 1
+
+    def shoot(self):
+        if self.shoot_CD == game_const.player_shoot_CD:
+            self.bullets.add(Player_Bullet(pos = (self.rect.left, self.rect.top)))
+            self.shoot_CD = 0
+        self.shoot_CD += 1
+
+class Player_Bullet(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super(Player_Bullet, self).__init__()
+        
+        self.image = pygame.transform.scale(pygame.image.load("./assets/player/BULLET.PNG"), (50, 50))
+        self.rect = self.image.get_rect(center = pos)
+        self.mask = pygame.mask.from_surface(self.image)
+
+        self.speed = 5
+
+    def move(self):
+        self.rect.top -= self.speed
