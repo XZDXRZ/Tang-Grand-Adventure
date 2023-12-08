@@ -10,6 +10,8 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(pygame.image.load("./assets/player/T_RED.PNG"), (129, 179))
         self.rect = self.image.get_rect(center = (400, 400))
         self.mask = pygame.mask.from_surface(self.image)
+        self.height = self.rect.bottom - self.rect.top
+        self.width = self.rect.right - self.rect.left
 
         self.hp = 5
         self.speed = 5
@@ -18,16 +20,20 @@ class Player(pygame.sprite.Sprite):
         self.shoot_CD = 0
 
     def move(self):
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w:
-                    self.rect.top -= self.speed
-                if event.key == pygame.K_s:
-                    self.rect.top += self.speed
-                if event.key == pygame.K_a:
-                    self.rect.left -= self.speed
-                if event.key == pygame.K_d:
-                    self.rect.left += self.speed
+        # for event in pygame.event.get():
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_w:
+        #             self.rect.top -= self.speed
+        #         if event.key == pygame.K_s:
+        #             self.rect.top += self.speed
+        #         if event.key == pygame.K_a:
+        #             self.rect.left -= self.speed
+        #         if event.key == pygame.K_d:
+        #             self.rect.left += self.speed
+
+        pos = list(pygame.mouse.get_pos())
+        self.rect.left = pos[0] - self.width/2
+        self.rect.top = pos[1] - self.height/2
 
         if self.rect.left < 0:
             self.rect.left = 0
@@ -38,7 +44,7 @@ class Player(pygame.sprite.Sprite):
         elif self.rect.bottom > game_const.size[1]:
             self.rect.bottom = game_const.size[1]
 
-        pygame.key.set_repeat(1)
+        # pygame.key.set_repeat(1)
 
     def loss_hp(self, bullets):
         if pygame.sprite.spritecollide(self, bullets, True, pygame.sprite.collide_mask):
@@ -46,7 +52,7 @@ class Player(pygame.sprite.Sprite):
 
     def shoot(self):
         if self.shoot_CD == game_const.player_shoot_CD:
-            self.bullets.add(Player_Bullet(pos = (self.rect.left, self.rect.top)))
+            self.bullets.add(Player_Bullet(pos = (self.rect.left + self.width/2, self.rect.top + self.height/2)))
             self.shoot_CD = 0
         self.shoot_CD += 1
 
