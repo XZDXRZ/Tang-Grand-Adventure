@@ -1,14 +1,15 @@
 # Defined all bosses
 
-import pygame, math, random
-import game_const, player
+import pygame
+import numpy
+import utils
 
 class Lance(pygame.sprite.Sprite):
     def __init__(self):
         super(Lance, self).__init__()
 
         self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/LG.PNG"), (200, 200))
-        self.rect = self.image.get_rect(center = (500, 200))
+        self.rect = self.image.get_rect(center = (500, 100))
         self.mask = pygame.mask.from_surface(self.image)
         self.height = self.rect.bottom - self.rect.top
         self.width = self.rect.right - self.rect.left
@@ -27,18 +28,18 @@ class Lance(pygame.sprite.Sprite):
     def shoot(self):
         if self.shoot_CD <= 0:
             self.bullets.add(Lance_Big_Bullet(
-                pos = (self.rect.left, self.rect.top),
-                horizontal_speed = -random.random()-.1,
-                vertical_speed = random.random()*3+.1,
-                horizontal_acceleration = random.random()*.01+.1,
-                ex_time = random.random()*100+.1,
+                pos = (self.rect.left+self.width/2, self.rect.top+self.height/2),
+                horizontal_speed = utils.normal_random(-2, 0.1),
+                vertical_speed = utils.normal_random(3, 0.1),
+                horizontal_acceleration = utils.normal_random(0.01, 0.001),
+                ex_time = utils.normal_random(100, 5),
             ))
             self.bullets.add(Lance_Big_Bullet(
-                pos = (self.rect.left, self.rect.top),
-                horizontal_speed = random.random()+.1,
-                vertical_speed = random.random()*3+.1,
-                horizontal_acceleration = -random.random()*.01-.1,
-                ex_time = random.random()*100+.1,
+                pos = (self.rect.left+self.width/2, self.rect.top+self.height/2),
+                horizontal_speed = utils.normal_random(2, 0.1),
+                vertical_speed = utils.normal_random(3, 0.1),
+                horizontal_acceleration = utils.normal_random(-0.01, 0.001),
+                ex_time = utils.normal_random(100, 5),
             ))
             self.shoot_CD = 100
         else:
@@ -73,7 +74,7 @@ class Lance_Big_Bullet(pygame.sprite.Sprite):
         for i in range(7):
             boss.bullets.add(Lance_Small_Bullet(
                 pos = (self.rect.left, self.rect.top),
-                speed = (random.random()*2+.1, random.random()*2+.1)
+                speed = (utils.normal_random(0, 2), utils.normal_random(0, 2))
             ))
 
 class Lance_Small_Bullet(pygame.sprite.Sprite):

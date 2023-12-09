@@ -1,7 +1,7 @@
 # Class defined for Tang
 
 import pygame
-import game_const
+import utils
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -39,19 +39,19 @@ class Player(pygame.sprite.Sprite):
 
         if self.rect.left < 0:
             self.rect.left = 0
-        elif self.rect.right > game_const.size[0]:
-            self.rect.right = game_const.size[0]
+        elif self.rect.right > utils.size[0]:
+            self.rect.right = utils.size[0]
         elif self.rect.top < 0:
             self.rect.top = 0
-        elif self.rect.bottom > game_const.size[1]:
-            self.rect.bottom = game_const.size[1]
+        elif self.rect.bottom > utils.size[1]:
+            self.rect.bottom = utils.size[1]
 
     def loss_hp(self, bullets):
         if pygame.sprite.spritecollide(self, bullets, True, pygame.sprite.collide_mask):
             self.hp -= 1
 
     def shoot(self):
-        if self.shoot_CD == game_const.player_shoot_CD:
+        if self.shoot_CD == utils.player_shoot_CD:
             self.bullets.add(Player_Bullet(
                 pos = (self.rect.left + self.width/2, self.rect.top + self.height/2)
             ))

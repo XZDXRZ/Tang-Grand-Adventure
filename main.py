@@ -4,10 +4,10 @@
 
 import pygame
 import sys, random
-import player, game_const, boss
+import player, utils, boss
 
 pygame.init()
-screen = pygame.display.set_mode(game_const.size)
+screen = pygame.display.set_mode(utils.size)
 pygame.display.set_caption("Tang in Yarra")
 
 player = player.Player()
@@ -34,7 +34,7 @@ def game_process():
     for bullet in boss.bullets:
         screen.blit(bullet.image, bullet.rect)
         bullet.move(boss=boss)
-        if bullet.rect.top < 0 or bullet.rect.bottom > game_const.size[1] or bullet.rect.left < 0 or bullet.rect.right > game_const.size[0]:
+        if bullet.rect.top < 0 or bullet.rect.bottom > utils.size[1] or bullet.rect.left < 0 or bullet.rect.right > utils.size[0]:
             boss.bullets.remove(bullet)
 
     # Render Boss
@@ -47,12 +47,12 @@ if __name__ == "__main__":
     random.seed()
 
     while True:
-        screen.fill(game_const.bg_color)
+        screen.fill(utils.bg_color)
 
         game_process()
         
         pygame.display.flip()
-        pygame.time.delay(game_const.tick)
+        pygame.time.delay(utils.tick)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
