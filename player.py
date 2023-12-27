@@ -1,7 +1,6 @@
-# Class defined for Tang
-
 import pygame
 import utils
+from typing import Tuple
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -11,13 +10,13 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (300, 300))
         self.mask = pygame.mask.from_surface(self.image)
 
-        self.hp = 5
-        self.speed = 5
+        self._hp = 5
+        self._speed = 5
 
-        self.bullets = pygame.sprite.Group()
-        self.shoot_CD = 0
+        self._bullets = pygame.sprite.Group()
+        self._shoot_CD = 0
 
-        self.alive = True
+        self._alive = True
 
     def move(self):
         # 纯粹不忍心删
@@ -33,10 +32,12 @@ class Player(pygame.sprite.Sprite):
         #             self.rect.left += self.speed
         # pygame.key.set_repeat(1)
 
+        # Get the position of the mouse
         pos = list(pygame.mouse.get_pos())
         self.rect.centerx = pos[0]
         self.rect.centery = pos[1]
 
+        # Preventing go out of screen
         if self.rect.left < 0:
             self.rect.left = 0
         elif self.rect.right > utils.size["width"]:
@@ -46,35 +47,52 @@ class Player(pygame.sprite.Sprite):
         elif self.rect.bottom > utils.size["height"]:
             self.rect.bottom = utils.size["height"]
 
-    def judge_hp_loss(self, bullets):
+    def judge_hp_loss(self,
+                      bullets: pygame.sprite.Group
+    ):
         if pygame.sprite.spritecollide(self, bullets, True, pygame.sprite.collide_mask):
-            self.hp -= 1
-        if self.hp <= 0:
-            self.alive = False
+            # Delete the bullet after collision
+            # And minus 1 hp
+            self._hp -= 1
+        if self._hp <= 0:
+            # Killed if hp drop to 0
+            self._alive = False
 
     def shoot(self):
-        if self.shoot_CD == utils.player_shoot_CD:
-            self.bullets.add(Player_Bullet(
+        if self._shoot_CD == utils.player_shoot_CD:
+            self._bullets.add(Player_Bullet(
                 pos = (self.rect.centerx, self.rect.centery)
             ))
-            self.shoot_CD = 0
-        self.shoot_CD += 1
+            self._shoot_CD = 0
+        self._shoot_CD += 1
     
-    def get_bullets_group(self):
-        return self.bullets
+    def get_bullets_group(self) -> bool:
+        return self._bullets
     
-    def remove_bullet(self, target_bullet):
-        self.bullets.remove(target_bullet)
+    def remove_bullet(self,
+                      target_bullet: pygame.sprite.Sprite
+    ):
+        """Remove a bullet from the bullet group in this entity.
+
+        Args:
+        - target_bullet: bullet that need to be removed.
+        """
+        self._bullets.remove(target_bullet)
+    
+    def whether_alive(self) -> bool:
+        return self._alive
 
 class Player_Bullet(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self,
+                 pos: Tuple[float, float]
+    ):
         super(Player_Bullet, self).__init__()
-        
+
         self.image = pygame.transform.scale(pygame.image.load("./assets/player/BULLET.PNG"), (50, 50))
         self.rect = self.image.get_rect(center = pos)
         self.mask = pygame.mask.from_surface(self.image)
 
-        self.speed = 5
+        self._speed = 5
 
     def move(self):
-        self.rect.centery -= self.speed
+        self.rect.centery -= self._speed
