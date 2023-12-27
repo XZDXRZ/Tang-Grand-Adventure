@@ -1,3 +1,5 @@
+# 磊↓那↑
+
 import pygame
 import utils
 from typing import Tuple
@@ -10,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (300, 300))
         self.mask = pygame.mask.from_surface(self.image)
 
-        self._hp = 5
+        self._hp = utils.player_max_hp
         self._speed = 5
 
         self._bullets = pygame.sprite.Group()
@@ -57,6 +59,12 @@ class Player(pygame.sprite.Sprite):
         if self._hp <= 0:
             # Killed if hp drop to 0
             self._alive = False
+
+    def judge_hp_gain(self,
+                      kit_group: pygame.sprite.Group
+    ):
+        if pygame.sprite.spritecollide(self, kit_group, True, pygame.sprite.collide_mask) and self._hp < utils.player_max_hp:
+            self._hp += 1
 
     def shoot(self):
         if self._shoot_CD == utils.player_shoot_CD:

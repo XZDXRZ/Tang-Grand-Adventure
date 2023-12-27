@@ -1,10 +1,10 @@
-# Author: Lance in Yarra
-# Photoshoper: Lambert in Yarra
+# Author: Lance De Yarra
+# Photoshoper: Lambert De Yarra
 # Contributor: Yarra Valley ChinaTown
 
 import pygame, numpy
 import sys
-import player, utils, lance
+import player, utils, lance, kit
 
 # Initialize pygame
 pygame.init()
@@ -15,6 +15,9 @@ pygame.display.set_caption("Tang Rex")
 
 # Initialize Player
 player = player.Player()
+
+# Initialize Kits
+kits = kit.Kit_Group()
 
 # Creating boss list and iterator for game boss
 boss_list = []
@@ -36,7 +39,16 @@ def game_process() -> bool:
     player.move()
     screen.blit(player.image, player.rect)
     player.judge_hp_loss(boss.get_bullets_group())
+    player.judge_hp_gain(kits.get_kits_group())
     player.shoot()
+
+    # Render HP Kit
+    kits.generate_hp_kit()
+    for kit in kits.get_kits_group():
+        screen.blit(kit.image, kit.rect)
+        kit.move()
+        if kit.whether_exist() == False:
+            kits.remove_kit(kit)
 
     # Render Boss Bullets
     for bullet in boss.get_bullets_group():

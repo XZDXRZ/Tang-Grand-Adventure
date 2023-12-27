@@ -1,3 +1,5 @@
+# 兰斯寄！
+
 from typing import Tuple
 import pygame, numpy
 import utils
@@ -6,7 +8,7 @@ class Lance(pygame.sprite.Sprite):
     def __init__(self):
         super(Lance, self).__init__()
 
-        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/LG.PNG"), (200, 200))
+        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/LANCE.PNG"), (200, 200))
         self.rect = self.image.get_rect(center = (utils.size["width"]/2, 90))
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -30,7 +32,7 @@ class Lance(pygame.sprite.Sprite):
             self.rect.bottom = utils.size["height"]
     
     def judge_hp_loss(self,
-                      bullets: pygame.sprite.Sprite
+                      bullets: pygame.sprite.Group
     ):
         if pygame.sprite.spritecollide(self, bullets, True, pygame.sprite.collide_mask):
             self._hp -= 1
@@ -63,10 +65,17 @@ class Lance(pygame.sprite.Sprite):
         for bullet in self._bullets:
             if bullet.whether_exist() == False:
                 self._bullets.remove(bullet)
-                for times in range(7):
+                for times in range(3):
+                    # self._bullets.add(Lance_Small_Bullet(
+                    #     pos = (bullet.rect.centerx, bullet.rect.centery),
+                    #     speed = (numpy.random.normal(0, 2), numpy.random.normal(0, 2))
+                    # ))
                     self._bullets.add(Lance_Small_Bullet(
                         pos = (bullet.rect.centerx, bullet.rect.centery),
-                        speed = (numpy.random.normal(0, 2), numpy.random.normal(0, 2))
+                        speed = (
+                            utils.random_sign() * (numpy.random.random()*3 + 1),
+                            utils.random_sign() * (numpy.random.random()*3 + 1)
+                        )
                     ))
     
     def get_bullets_group(self) -> pygame.sprite.Group:
@@ -95,7 +104,7 @@ class Lance_Big_Bullet(pygame.sprite.Sprite):
     ):
         super(Lance_Big_Bullet, self).__init__()
 
-        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/BULLET.PNG"), (100, 100))
+        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/INT.PNG"), (100, 100))
         self.rect = self.image.get_rect(center = pos)
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -127,11 +136,12 @@ class Lance_Small_Bullet(pygame.sprite.Sprite):
     ):
         super(Lance_Small_Bullet, self).__init__()
 
-        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/BULLET.PNG"), (50, 50))
+        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/INT.PNG"), (50, 50))
         self.rect = self.image.get_rect(center = pos)
         self.mask = pygame.mask.from_surface(self.image)
 
         self._speed = speed
+        print(self._speed)
 
         self._existance = True
 
