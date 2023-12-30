@@ -141,7 +141,6 @@ class Lance_Small_Bullet(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         self._speed = speed
-        print(self._speed)
 
         self._existance = True
 
