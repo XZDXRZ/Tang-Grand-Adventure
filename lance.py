@@ -46,14 +46,14 @@ class Lance(pygame.sprite.Sprite):
                 horizontal_speed = numpy.random.normal(-2, 0.1),
                 vertical_speed = numpy.random.normal(3, 0.1),
                 horizontal_acceleration = numpy.random.normal(0.01, 0.001),
-                explode_time = numpy.random.normal(100, 5),
+                explode_time = numpy.random.normal(80, 5),
             ))
             self._bullets.add(Lance_Big_Bullet(
                 pos = (self.rect.centerx, self.rect.centery),
                 horizontal_speed = numpy.random.normal(2, 0.1),
                 vertical_speed = numpy.random.normal(3, 0.1),
                 horizontal_acceleration = numpy.random.normal(-0.01, 0.001),
-                explode_time = numpy.random.normal(100, 5),
+                explode_time = numpy.random.normal(80, 5),
             ))
             self._shoot_CD = 100
         else:
@@ -63,20 +63,17 @@ class Lance(pygame.sprite.Sprite):
 
     def generate_small_bullets(self):
         for bullet in self._bullets:
-            if bullet.whether_exist() == False:
-                self._bullets.remove(bullet)
-                for times in range(3):
-                    # self._bullets.add(Lance_Small_Bullet(
-                    #     pos = (bullet.rect.centerx, bullet.rect.centery),
-                    #     speed = (numpy.random.normal(0, 2), numpy.random.normal(0, 2))
-                    # ))
-                    self._bullets.add(Lance_Small_Bullet(
-                        pos = (bullet.rect.centerx, bullet.rect.centery),
-                        speed = (
-                            utils.random_sign() * (numpy.random.random()*3 + 1),
-                            utils.random_sign() * (numpy.random.random()*3 + 1)
-                        )
-                    ))
+            if bullet.whether_exist() == True:
+                return
+            self._bullets.remove(bullet)
+            for times in range(4):
+                self._bullets.add(Lance_Small_Bullet(
+                    pos = (bullet.rect.centerx, bullet.rect.centery),
+                    speed = (
+                        utils.random_sign() * (numpy.random.random()*3 + 1),
+                        utils.random_sign() * (numpy.random.random()*3 + 1)
+                    )
+                ))
     
     def get_bullets_group(self) -> pygame.sprite.Group:
         return self._bullets
@@ -104,7 +101,7 @@ class Lance_Big_Bullet(pygame.sprite.Sprite):
     ):
         super(Lance_Big_Bullet, self).__init__()
 
-        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/INT.PNG"), (100, 100))
+        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/F.png"), (1629/8, 202/8))
         self.rect = self.image.get_rect(center = pos)
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -136,7 +133,7 @@ class Lance_Small_Bullet(pygame.sprite.Sprite):
     ):
         super(Lance_Small_Bullet, self).__init__()
 
-        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/INT.PNG"), (50, 50))
+        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/F.png"), (1629/15, 202/15))
         self.rect = self.image.get_rect(center = pos)
         self.mask = pygame.mask.from_surface(self.image)
 

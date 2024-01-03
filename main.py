@@ -11,7 +11,7 @@ pygame.init()
 screen = pygame.display.set_mode(
     (utils.size["width"], utils.size["height"])
 )
-pygame.display.set_caption("Tang Rex")
+pygame.display.set_caption("雅拉小唐冒险记")
 
 # Initialize Player
 player = player.Player()
@@ -71,7 +71,8 @@ def game_process() -> bool:
     # If the player is defeated
     if player.whether_alive() == False:
         return False
-    return True
+    else:
+        return True
 
 if __name__ == "__main__":
     numpy.random.seed(1919810)
