@@ -4,14 +4,14 @@
 
 import pygame, numpy
 import sys
-import player, utils, lance, kit
+import player, utils, lance, kit, ethan
 
 # Initialize pygame
 pygame.init()
 screen = pygame.display.set_mode(
     (utils.size["width"], utils.size["height"])
 )
-pygame.display.set_caption("雅拉小唐冒险记")
+pygame.display.set_caption("垒那的精神病院大冒险")
 
 # Initialize Player
 player = player.Player()
@@ -22,7 +22,11 @@ kits = kit.Kit_Group()
 # Creating boss list and iterator for game boss
 boss_list = []
 boss_list.append(lance.Lance())
+boss_list.append(ethan.Ethan())
 boss_iterator = iter(boss_list)
+
+# DEBUG
+next(boss_iterator)
 
 def game_process() -> bool:
     # Globalize boss variable

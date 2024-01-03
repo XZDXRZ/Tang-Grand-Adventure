@@ -4,6 +4,12 @@ from typing import Tuple
 import pygame, numpy
 import utils
 
+bullet_image_list = [
+    pygame.transform.scale(pygame.image.load("./assets/boss/lance/F.png"), (1629/7, 202/7)),
+    pygame.transform.scale(pygame.image.load("./assets/boss/lance/N.png"), (480/1.3, 108/1.3)),
+    pygame.transform.scale(pygame.image.load("./assets/boss/lance/E.png"), (480/2.3, 66/2.3))
+]
+
 class Lance(pygame.sprite.Sprite):
     def __init__(self):
         super(Lance, self).__init__()
@@ -42,6 +48,7 @@ class Lance(pygame.sprite.Sprite):
     def shoot(self):
         if self._shoot_CD <= 0:
             self._bullets.add(Lance_Big_Bullet(
+                image_number = numpy.random.randint(0, 3),
                 pos = (self.rect.centerx, self.rect.centery),
                 horizontal_speed = numpy.random.normal(-2, 0.1),
                 vertical_speed = numpy.random.normal(3, 0.1),
@@ -49,6 +56,7 @@ class Lance(pygame.sprite.Sprite):
                 explode_time = numpy.random.normal(80, 5),
             ))
             self._bullets.add(Lance_Big_Bullet(
+                image_number = numpy.random.randint(0, 3),
                 pos = (self.rect.centerx, self.rect.centery),
                 horizontal_speed = numpy.random.normal(2, 0.1),
                 vertical_speed = numpy.random.normal(3, 0.1),
@@ -93,6 +101,7 @@ class Lance(pygame.sprite.Sprite):
 
 class Lance_Big_Bullet(pygame.sprite.Sprite):
     def __init__(self,
+                 image_number: int,
                  pos: Tuple[float, float],
                  horizontal_speed: float,
                  vertical_speed: float,
@@ -101,7 +110,7 @@ class Lance_Big_Bullet(pygame.sprite.Sprite):
     ):
         super(Lance_Big_Bullet, self).__init__()
 
-        self.image = pygame.transform.scale(pygame.image.load("./assets/boss/lance/F.png"), (1629/8, 202/8))
+        self.image = bullet_image_list[image_number]
         self.rect = self.image.get_rect(center = pos)
         self.mask = pygame.mask.from_surface(self.image)
 
