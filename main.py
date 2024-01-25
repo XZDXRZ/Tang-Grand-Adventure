@@ -9,16 +9,17 @@ import player, utils, lance, kit, ethan
 # Initialize pygame
 pygame.init()
 screen = pygame.display.set_mode(
-    (utils.size["width"], utils.size["height"])
+    (utils.SIZE["width"], utils.SIZE["height"])
 )
 pygame.display.set_caption("垒那的精神病院大冒险")
 
 # Initialize Player
-player = player.Player()
+leonard = player.Player()
 
 # Initialize Kits
 kits = kit.Kit_Group()
 
+# Initialize Boss
 # Creating boss list and iterator for game boss
 boss_list = []
 boss_list.append(lance.Lance())
@@ -26,57 +27,7 @@ boss_list.append(ethan.Ethan())
 boss_iterator = iter(boss_list)
 
 # DEBUG
-next(boss_iterator)
-
-def game_process() -> bool:
-    # Globalize boss variable
-    global boss
-
-    # Render Player Bullets
-    for bullet in player.get_bullets_group():
-        bullet.move()
-        screen.blit(bullet.image, bullet.rect)
-        if bullet.rect.top < 0:
-            player.remove_bullet(bullet)
-
-    # Render player
-    player.move()
-    screen.blit(player.image, player.rect)
-    player.judge_hp_loss(boss.get_bullets_group())
-    player.judge_hp_gain(kits.get_kits_group())
-    player.shoot()
-
-    # Render HP Kit
-    kits.generate_hp_kit()
-    for kit in kits.get_kits_group():
-        screen.blit(kit.image, kit.rect)
-        kit.move()
-        if kit.whether_exist() == False:
-            kits.remove_kit(kit)
-
-    # Render Boss Bullets
-    for bullet in boss.get_bullets_group():
-        bullet.move()
-        screen.blit(bullet.image, bullet.rect)
-        if bullet.rect.top < 0 or bullet.rect.bottom > utils.size["height"] or bullet.rect.left < 0 or bullet.rect.right > utils.size["width"]:
-            boss.remove_bullet(bullet)
-
-    # Render Boss
-    boss.move()
-    screen.blit(boss.image, boss.rect)
-    boss.judge_hp_loss(player.get_bullets_group())
-    boss.shoot()
-
-    # If the boss is defeated
-    if boss.whether_alive() == False:
-        boss = next(boss_iterator)
-        return True
-    
-    # If the player is defeated
-    if player.whether_alive() == False:
-        return False
-    else:
-        return True
+# next(boss_iterator)
 
 if __name__ == "__main__":
     numpy.random.seed(1919810)
@@ -86,17 +37,37 @@ if __name__ == "__main__":
     game_running = True
 
     while game_running:
-        screen.fill(utils.bg_color)
+        screen.fill(utils.BG_COLOR)
 
-        game_running = game_process()
+        # Render player
+        leonard.update(
+            boss_bullets_group=boss.get_bullets_group(),
+            kits_group=kits.get_kits_group()
+        )
+        leonard.display(screen)
+
+        # Render HP Kit
+        kits.update()
+        kits.display(screen)
+
+        # Render Boss
+        boss.update(
+            player_bullets_group=leonard.get_bullets_group()
+        )
+        boss.display(screen)
+
+        # If the boss is defeated
+        if boss.whether_alive() == False:
+            boss = next(boss_iterator)
+        
+        # If the player is defeated
+        if leonard.whether_alive() == False:
+            game_running = False
         
         pygame.display.flip()
-        pygame.time.delay(utils.game_tick)
+        pygame.time.delay(utils.GAME_TICK)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
-pygame.quit()
-sys.exit()
